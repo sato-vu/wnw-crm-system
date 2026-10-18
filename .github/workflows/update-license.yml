@@ -1,0 +1,45 @@
+name: Auto Sync CRM Status to Licenses JSON
+
+on:
+  project_card:
+    types: [moved]
+  workflow_dispatch:
+
+jobs:
+  sync-licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Update Gist License JSON
+        env:
+          GIST_TOKEN: ${{ secrets.GIST_PAT_TOKEN }}
+          GIST_ID: "1b4942ae74fa5f3640dc15541b97574e"
+        run: |
+          python3 -c "
+          import json, os, urllib.request
+
+          gist_id = os.environ['GIST_ID']
+          token = os.environ['GIST_TOKEN']
+          
+          license_data = {
+              '50101775': 'ACTIVE',
+              '900100018': 'ACTIVE',
+              '128923008': 'BLOCKED'
+          }
+          
+          url = f'https://api.github.com/gists/{gist_id}'
+          payload = json.dumps({'files': {'licenses.json': {'content': json.dumps(license_data, indent=2)}}}).encode('utf-8')
+          
+          req = urllib.request.Request(url, data=payload, headers={
+              'Authorization': f'token {token}',
+              'Content-Type': 'application/json'
+          }, method='PATCH')
+          
+          try:
+              with urllib.request.urlopen(req) as response:
+                  print('Licenses JSON updated successfully via GitHub CRM Workflow!')
+          except Exception as e:
+              print(f'Error updating Gist: {e}')
+          "
