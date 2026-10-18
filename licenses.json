@@ -1,0 +1,18 @@
+{
+  "12345678": {
+    "status": "ACTIVE",
+    "fee": "30.0"
+  },
+  "88889999": {
+    "status": "ACTIVE",
+    "fee": "20.0"
+  },
+  "77776666": {
+    "status": "PENDING_PAYMENT",
+    "fee": "25.0"
+  },
+  "55554444": {
+    "status": "BLOCKED",
+    "fee": "30.0"
+  }
+}
